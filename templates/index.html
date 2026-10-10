@@ -1,0 +1,82 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>EV Health Advisor</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0a0e14;--panel:#121822;--line:#222d3c;--tx:#e8eef6;--mu:#8a9ab0;--ok:#38e0b0;--warn:#ffb534;--bad:#ff5a64;--c:var(--ok)}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(1100px 500px at 85% -10%,#12385a66,transparent),radial-gradient(800px 400px at -10% 30%,#0f3a3355,transparent),var(--bg);color:var(--tx);font:15px/1.5 Inter,sans-serif}
+h1,h2,h3,.num{font-family:Sora,sans-serif}.wrap{max-width:1180px;margin:auto;padding:32px 20px 60px}
+header{display:flex;justify-content:space-between;align-items:end;flex-wrap:wrap;gap:12px;margin-bottom:24px}
+h1{margin:0;font-size:32px;font-weight:800;letter-spacing:-.02em}header p{margin:4px 0 0;color:var(--mu)}
+.grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:20px;align-items:start}@media(max-width:900px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:22px}h2{font-size:17px;margin:0 0 14px}
+button{background:#1a2432;color:var(--tx);border:1px solid var(--line);border-radius:10px;padding:8px 13px;font:500 13px Inter;cursor:pointer;transition:.15s}
+button:hover{border-color:var(--ok)}button.on{background:var(--ok);color:#06231b;border-color:var(--ok)}button:focus-visible,input:focus-visible{outline:2px solid var(--ok);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}.s{margin-bottom:14px}.s .t{display:flex;justify-content:space-between;font-size:14px}.s .t span{color:var(--mu)}
+.s b{font-variant-numeric:tabular-nums}.s.warn b{color:var(--warn)}.s.bad b{color:var(--bad)}input[type=range]{width:100%;accent-color:var(--ok);margin:5px 0 0}.s.warn input{accent-color:var(--warn)}.s.bad input{accent-color:var(--bad)}
+.hero{display:grid;grid-template-columns:auto 1fr 1fr;gap:20px;align-items:center}@media(max-width:620px){.hero{grid-template-columns:1fr 1fr}.hero .gw{grid-column:1/3}}
+.gw{text-align:center;width:190px;margin:auto}svg{width:100%}#arc{transition:stroke-dashoffset .5s cubic-bezier(.2,.8,.2,1),stroke .3s}
+.gn{font:800 34px Sora;margin:-52px 0 8px}.gl{color:var(--mu);font-size:13px}.stat .num{font-size:30px;font-weight:800}.stat small{display:block;color:var(--mu)}
+.sum{margin:14px 0 0;padding:12px 14px;border-radius:12px;background:#1a2432;border-left:3px solid var(--ok)}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:20px}@media(max-width:620px){.cards{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;border-top:3px solid var(--k)}
+.card.Good{--k:var(--ok)}.card.Fair{--k:var(--warn)}.card.Poor{--k:var(--bad)}
+.card h3{margin:0;font-size:17px;display:flex;justify-content:space-between;align-items:center}.badge{font:600 12px Sora;padding:4px 12px;border-radius:99px;color:var(--k);background:color-mix(in srgb,var(--k) 15%,transparent)}
+.hb{height:8px;border-radius:9px;background:#1d2736;margin:12px 0 4px;overflow:hidden}.hb i{display:block;height:100%;background:var(--k);border-radius:9px;transition:width .5s}
+.meta{display:flex;justify-content:space-between;color:var(--mu);font-size:12px}.card p{margin:12px 0 8px}
+ul{list-style:none;padding:0;margin:8px 0}li{font-size:13px;padding:8px 10px;border-radius:10px;background:#18212e;margin-bottom:6px}li b{display:block}li span{color:var(--mu)}
+li.bad{border-left:3px solid var(--bad)}li.warn{border-left:3px solid var(--warn)}.ok{color:var(--ok);font-size:13px}
+.act{font:600 13px Sora;color:var(--k)}.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:18px}
+.bar{display:grid;grid-template-columns:118px 1fr 42px;gap:8px;align-items:center;font-size:12px;margin:5px 0}.bar .b{height:6px;background:#1d2736;border-radius:9px;overflow:hidden}.bar i{display:block;height:100%;background:#4a5a72}
+.bar.best{color:var(--ok);font-weight:600}.bar.best i{background:var(--ok)}.bar span:last-child{text-align:right;color:var(--mu)}.note{color:var(--mu);font-size:13px;margin:12px 0 0}
+.f{display:grid;grid-template-columns:1fr 1fr;gap:12px}.f label{font-size:13px;color:var(--mu)}input[type=number],select{width:100%;margin-top:4px;background:#0d131c;color:var(--tx);border:1px solid var(--line);border-radius:10px;padding:9px;font:15px Inter}
+.go{background:var(--ok);color:#06231b;border-color:var(--ok);font-weight:600;margin-top:14px;display:inline-block}.row .go{margin-top:0}.filebtn{padding:8px 13px;border-radius:10px;cursor:pointer;font-size:13px}
+.err{color:var(--bad);font-size:13px;min-height:18px;margin:10px 0 0}details{margin-top:8px;border-top:1px solid var(--line);padding-top:12px}summary{cursor:pointer;color:var(--mu);font-size:14px;margin-bottom:12px}
+.tip{background:#12303a;border-radius:10px;padding:9px 11px;font-size:13px;margin:8px 0}#sp{margin-top:10px;width:100%;max-height:70px}@media(max-width:520px){.f{grid-template-columns:1fr}}
+.wiz{max-width:640px;margin:0 auto}.prog{height:6px;background:#1d2736;border-radius:9px;overflow:hidden;margin-bottom:18px}.prog i{display:block;height:100%;width:0;background:var(--ok);transition:width .3s}
+.sn{color:var(--mu);font-size:13px}.wiz h2{font-size:24px;margin:6px 0 6px}.inl{display:flex;align-items:center;gap:10px}.inl input{font-size:26px;font-family:Sora;max-width:220px}.inl span{color:var(--mu)}
+.chk{display:block;padding:12px 14px;border:1px solid var(--line);border-radius:12px;margin-bottom:8px;cursor:pointer}.chk input{margin-right:10px;accent-color:var(--ok)}
+.nav{margin:18px 0 0;justify-content:space-between}.nav .go{margin-top:0}button:disabled{opacity:.35;cursor:default}
+.pl{list-style:none;padding:0}.pl li{padding:10px 0;color:var(--mu);opacity:.35;transition:.3s}.pl li.on{opacity:1;color:var(--tx)}.pl li.on::before{content:"✓ ";color:var(--ok)}#res{margin-top:0}
+</style></head><body><div class="wrap">
+<header><div><h1>EV Health Advisor</h1><p>Answer a few questions using what your car's screen shows. We will check the battery, motor, brakes and tires.</p></div></header>
+<section class="panel wiz" id="wiz"><div class="prog"><i id="pg"></i></div><div class="sn" id="sn"></div><h2 id="q"></h2><p class="note" id="hint" style="margin:0 0 16px"></p>
+<div id="inp"></div><p class="err" id="err" role="alert"></p><div class="row nav"><button id="back">Back</button><button id="skip">I don't know</button><button class="go" id="next">Next</button></div></section>
+<section class="panel wiz" id="proc" hidden><h2>Checking your vehicle</h2><ul class="pl"><li>Reading your answers</li><li>Estimating the sensor values you cannot see</li><li>Running the prediction models</li></ul></section>
+<div id="res" hidden><section class="panel"><div class="hero"><div class="gw"><svg viewBox="0 0 200 110"><path d="M20 100A80 80 0 0 1 180 100" fill="none" stroke="#1d2736" stroke-width="14" stroke-linecap="round"/><path id="arc" d="M20 100A80 80 0 0 1 180 100" fill="none" stroke="var(--c)" stroke-width="14" stroke-linecap="round" stroke-dasharray="251.3" stroke-dashoffset="251.3"/></svg>
+<div class="gn" id="pct" style="color:var(--c)">0%</div><div class="gl">Chance of failure</div></div>
+<div class="stat"><div class="num" id="rul">-</div><small>days of expected life left</small></div><div class="stat"><div class="num" id="lvl" style="color:var(--c)">-</div><small>failure risk level</small></div></div>
+<div class="sum" id="sum"></div><p class="note" id="note"></p><svg id="sp" viewBox="0 0 300 54" hidden></svg></section><div class="cards" id="cards"></div><button id="again" class="go" style="margin-top:18px">Change answers or check another vehicle</button></div>
+<p class="note" style="max-width:640px;margin:24px auto 0">This tool is decision support only and uses a simulated dataset. It does not replace a mechanic or the manufacturer's diagnostics, especially for brakes and battery overheating.</p></div>
+<script>
+const $=id=>document.getElementById(id);let i=0,A={};
+const Q=[
+{k:'age',t:'How old is your vehicle?',h:'Years since first registration. You can find this in your registration papers.',u:'years',ph:'4',min:0,max:30},
+{k:'odo',t:'What does the odometer show?',h:'Total distance driven, shown on the dashboard or the car screen.',u:'km',ph:'60000',min:0,max:600000},
+{k:'soc',t:'How much battery is left right now?',h:'The battery percentage on your dashboard.',u:'%',ph:'80',min:0,max:100},
+{k:'range_shown',t:'What range does the car show right now?',h:'The estimated distance left, usually next to the battery percentage.',u:'km',ph:'250',min:1,max:1000},
+{k:'range_new',t:'What was the range of your car when new, on a full charge?',h:'Look in the brochure or on the manufacturer website. A rough figure is fine.',u:'km',ph:'400',min:50,max:1000},
+{k:'amb',t:'What is the outside temperature?',h:'Shown on your dashboard or car screen.',u:'°C',ph:'25',min:-30,max:55},
+{k:'tire_psi',t:'What is your lowest tire pressure?',h:'Open the tire pressure screen and use the lowest of the four tires.',ph:'33',sel:1,min:10,max:60},
+{k:'cons',t:'What is your average energy use?',h:'On the trip screen, in kWh per 100 km. Most cars sit between 14 and 20.',u:'kWh/100 km',ph:'16',min:5,max:40},
+{k:'brake_months',t:'How many months since your last brake service?',h:'Check your service book or the last invoice.',u:'months',ph:'12',min:0,max:120},
+{k:'warn',t:'Are any warning lights on?',h:'Tick every light that is on right now, or leave all empty.',multi:1}];
+function draw(){const q=Q[i];$('pg').style.width=i/Q.length*100+'%';$('sn').textContent=`Question ${i+1} of ${Q.length}`;$('q').textContent=q.t;$('hint').textContent=q.h;$('err').textContent='';
+ if(q.multi){$('inp').innerHTML=['Battery','Motor','Brakes','Tires'].map(n=>`<label class="chk"><input type="checkbox" value="${n}" ${(A.warn||[]).includes(n)?'checked':''}>${n} warning light</label>`).join('')}
+ else $('inp').innerHTML=`<div class="inl"><input id="v" type="number" step="any" inputmode="decimal" placeholder="e.g. ${q.ph}" value="${A[q.k]??''}" aria-label="${q.t}">${q.sel?'<select id="un"><option>psi</option><option>bar</option></select>':`<span>${q.u}</span>`}</div>`;
+ $('skip').hidden=!!q.multi;$('back').disabled=i==0;$('next').textContent=i==Q.length-1?'Check my vehicle':'Next';const v=$('v');if(v)v.focus()}
+function go(){if(i==Q.length-1)return finish();i++;draw()}
+function next(){const q=Q[i];if(q.multi){A.warn=[...document.querySelectorAll('#inp input:checked')].map(x=>x.value);return go()}
+ const raw=$('v').value;if(raw==='')return $('err').textContent='Enter a number, or choose "I don\'t know".';let x=+raw;if(q.sel&&$('un').value=='bar')x*=14.5038;
+ if(!(x>=q.min&&x<=q.max))return $('err').textContent=`Enter a value between ${q.min} and ${q.max}${q.u?' '+q.u:' psi (0.7 to 4.1 bar)'}.`;A[q.k]=+x.toFixed(2);go()}
+function skip(){delete A[Q[i].k];go()}
+async function finish(){$('wiz').hidden=true;$('proc').hidden=false;const L=[...document.querySelectorAll('.pl li')];L.forEach(l=>l.classList.remove('on'));
+ const req=fetch('/api/check',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(A)}).then(r=>r.json());
+ for(const l of L){await new Promise(r=>setTimeout(r,550));l.classList.add('on')}await new Promise(r=>setTimeout(r,450));const d=await req;$('proc').hidden=true;
+ if(d.error){$('wiz').hidden=false;$('err').textContent=d.error;return}show(d)}
+function show(d){const p=d.failure.prob,c=d.failure.level=='High'?'--bad':d.failure.level=='Medium'?'--warn':'--ok';document.documentElement.style.setProperty('--c',`var(${c})`);
+ $('arc').style.strokeDashoffset=251.3*(1-p);$('pct').textContent=Math.round(p*100)+'%';$('rul').textContent=d.rul_days;$('lvl').textContent=d.failure.level;$('sum').textContent=d.summary;$('note').textContent=d.note||'';
+ $('cards').innerHTML=d.components.map(c=>`<div class="card ${c.condition}"><h3>${c.name}<span class="badge">${c.condition}</span></h3><div class="hb"><i style="width:${c.score}%"></i></div><div class="meta"><span>Health ${c.score}/100</span><span>${c.confidence}% sure</span></div>
+ <p>${c.message}</p>${c.issues.length?'<ul>'+c.issues.map(i=>`<li class="${i.status}"><b>${i.label}: ${i.value}</b><span>${i.status=='bad'?'Critical':'Warning'} (normal: ${i.limit}). ${i.why}.</span></li>`).join('')+'</ul>':'<div class="ok">All readings are in the normal range.</div>'}${c.tip?`<div class="tip">${c.tip}</div>`:''}<div class="act">${c.action}</div></div>`).join('');$('res').hidden=false}
+$('next').onclick=next;$('skip').onclick=skip;$('back').onclick=()=>{i--;draw()};$('inp').onkeydown=e=>{if(e.key=='Enter')next()};
+$('again').onclick=()=>{$('res').hidden=true;$('wiz').hidden=false;i=0;draw();scrollTo(0,0)};draw();
+</script></body></html>
